@@ -7,8 +7,7 @@ import typing
 import numpy
 
 # local libraries
-from nion.swift import DocumentController
-# None
+from nion.swift import Facade
 
 _ = gettext.gettext
 
@@ -25,9 +24,10 @@ class MenuItemDelegate(object):
         # close will be called if the extension is unloaded.
         pass
 
-    def menu_item_execute(self, document_controller: DocumentController.DocumentController) -> None:
-        document_controller.add_data(numpy.random.randn(64, 64), _("Random 64"))
-        logging.info("MenuItemDelegate menu_item_execute has been called.")
+    class MenuItemDelegate(object):
+        def menu_item_execute(self, document_window: Facade.DocumentWindow) -> None:
+            document_window.add_data(numpy.random.randn(64, 64), _("Random 64"))
+            logging.info("MenuItemDelegate menu_item_execute has been called.")
 
 
 class MenuExampleExtension(object):
@@ -35,7 +35,7 @@ class MenuExampleExtension(object):
     # required for Swift to recognize this as an extension class.
     extension_id = "nion.swift.examples.menu_example"
 
-    def __init__(self, api_broker: typing.Any) -> None:
+    def __init__(self, api_broker) -> None:
         # grab the api object.
         api = api_broker.get_api(version="1", ui_version="1")
         # be sure to keep a reference or it will be closed immediately.
